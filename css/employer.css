@@ -1,0 +1,159 @@
+/* ============================================================
+   JobMatch — Employer Dashboard
+   ============================================================ */
+
+.emp-header { background: linear-gradient(135deg, #0f2557, #1e4fc8); }
+.emp-header__inner {
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.emp-header__greeting { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+.emp-post-btn { flex-shrink: 0; }
+
+/* ── Job card ── */
+.emp-job-card {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 14px; padding: 20px 22px;
+  margin-bottom: 14px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.emp-job-card:hover { box-shadow: 0 6px 20px rgba(37,87,167,0.1); border-color: var(--border-hover); }
+.emp-job-card__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.emp-job-card__left   { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+.emp-job-logo {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--blue-pale); color: var(--blue-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+}
+.emp-job-card__title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.emp-job-card__meta  {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  font-size: 0.78rem; color: var(--text-muted);
+}
+.emp-job-card__meta span { display: flex; align-items: center; gap: 4px; }
+.emp-job-card__actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.emp-status-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+.emp-delete-btn { color: #ef4444 !important; }
+.emp-delete-btn:hover { background: #fee2e2 !important; border-color: #fca5a5 !important; }
+.emp-job-card__footer {
+  display: flex; gap: 20px; padding-top: 10px;
+  border-top: 1px solid #f3f4f6;
+}
+.emp-job-card__stat { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--text-faint); }
+
+/* ── Job selector ── */
+.emp-job-selector { margin-bottom: 8px; }
+.job-selector-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; background: #fff;
+  border: 1px solid #e5e7eb; border-radius: 12px;
+  margin-bottom: 10px; cursor: pointer;
+  transition: all 0.2s;
+}
+.job-selector-item:hover { border-color: var(--blue-mid); background: var(--blue-pale); }
+.job-selector-item__title { font-weight: 700; font-size: 0.9rem; flex: 1; }
+.job-selector-item__meta  { font-size: 0.78rem; color: var(--text-muted); }
+.job-selector-item i { color: var(--text-faint); }
+
+/* ── Applicants list ── */
+.applicants-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+}
+.applicants-title { font-size: 1.1rem; font-weight: 800; }
+.applicants-count { font-size: 0.82rem; color: var(--text-muted); }
+
+.applicant-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; background: #fff;
+  border: 1px solid #e5e7eb; border-radius: 12px;
+  margin-bottom: 10px; transition: box-shadow 0.2s;
+}
+.applicant-row:hover { box-shadow: 0 4px 14px rgba(37,87,167,0.1); border-color: var(--border-hover); }
+
+.applicant-row__rank {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 800;
+  background: #f3f4f6; color: var(--text-muted);
+  flex-shrink: 0;
+}
+.rank-gold   { background: #fef3c7; color: #92400e; }
+.rank-silver { background: #f1f5f9; color: #475569; }
+.rank-bronze { background: #fdf4ee; color: #9a3412; }
+
+.applicant-row__avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--blue-pale); color: var(--blue-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem; font-weight: 700; flex-shrink: 0;
+}
+.applicant-row__info  { flex: 1; min-width: 0; }
+.applicant-row__name  { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.applicant-row__email { font-size: 0.75rem; color: var(--text-faint); }
+.applicant-row__score { font-size: 1.2rem; font-weight: 900; letter-spacing: -0.5px; flex-shrink: 0; min-width: 48px; text-align: right; }
+.applicant-row__actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .emp-header__inner   { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .emp-post-btn        { width: 100%; justify-content: center; }
+
+  .emp-job-card__header  { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .emp-job-card__actions { width: 100%; flex-wrap: wrap; }
+
+  .applicant-row         { flex-wrap: wrap; gap: 8px; }
+  .applicant-row__score  { margin-left: 0; }
+  .applicant-row__actions{ width: 100%; }
+  .applicant-row__info   { flex: 1; min-width: 120px; }
+
+  .emp-company-card__header { flex-direction: column; align-items: flex-start; }
+
+  .job-selector-item { padding: 12px 14px; }
+}
+
+/* ── CV keyword pills ── */
+.cv-kw-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.cv-kw {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 600;
+}
+.cv-kw--match { background: #dcfce7; color: #15803d; }
+.cv-kw--miss  { background: #fee2e2; color: #b91c1c; }
+
+/* ── Status badge ── */
+.status-badge {
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 700; text-transform: capitalize;
+}
+.status-badge--pending  { background: #f3f4f6; color: var(--text-muted); }
+.status-badge--reviewed { background: #dbeafe; color: #1d4ed8; }
+.status-badge--accepted { background: #dcfce7; color: #15803d; }
+.status-badge--rejected { background: #fee2e2; color: #b91c1c; }
+
+/* ── Company profile card ── */
+.emp-company-card {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 16px; padding: 28px;
+  box-shadow: 0 2px 8px rgba(11,18,32,0.05);
+}
+.emp-company-card__header {
+  display: flex; align-items: center; gap: 18px;
+  margin-bottom: 28px; padding-bottom: 22px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.emp-company-logo {
+  width: 60px; height: 60px; border-radius: 14px;
+  background: var(--blue-pale); color: var(--blue-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; font-weight: 800; flex-shrink: 0;
+  border: 2px solid rgba(37,87,167,0.15);
+}
+.emp-company-card__name { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+.emp-company-card__meta { font-size: 0.82rem; color: var(--text-muted); }
