@@ -1,0 +1,125 @@
+/* ============================================================
+   JobMatch — Notification Bell
+   ============================================================ */
+
+.notif-wrapper {
+  position: relative;
+}
+
+/* ── Bell button ── */
+.notif-bell {
+  position: relative;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-muted);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+.notif-bell:hover { background: var(--blue-pale); color: var(--blue-mid); border-color: var(--border-hover); }
+
+/* ── Badge ── */
+.notif-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  min-width: 18px; height: 18px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.62rem; font-weight: 800;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #fff;
+  animation: badge-pop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes badge-pop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+/* ── Panel ── */
+.notif-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 340px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(11,18,32,0.14);
+  z-index: 200;
+  overflow: hidden;
+  transform: translateY(-8px) scale(0.97);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.notif-panel--open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.notif-panel__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.notif-panel__title {
+  font-size: 0.9rem; font-weight: 800; color: var(--text);
+  display: flex; align-items: center; gap: 7px;
+}
+.notif-panel__title i { color: var(--blue-mid); }
+.notif-panel__mark-read {
+  font-size: 0.75rem; color: var(--blue-mid);
+  font-weight: 600; cursor: pointer; background: none; border: none;
+  font-family: var(--font);
+}
+.notif-panel__mark-read:hover { text-decoration: underline; }
+
+/* ── List ── */
+#notifList { max-height: 380px; overflow-y: auto; }
+
+.notif-loading,
+.notif-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 20px; gap: 10px;
+  color: var(--text-muted); font-size: 0.82rem;
+}
+.notif-empty i { font-size: 1.8rem; color: #d1d5db; }
+
+/* ── Notification item ── */
+.notif-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 13px 18px;
+  border-bottom: 1px solid #f9fafb;
+  cursor: pointer; transition: background 0.15s;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: #f9fafb; }
+.notif-item--unread { background: #eff6ff; }
+.notif-item--unread:hover { background: #dbeafe; }
+
+.notif-item__icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.875rem; flex-shrink: 0;
+}
+.notif-icon--application     { background: #dbeafe; color: #2557a7; }
+.notif-icon--status          { background: #fef3c7; color: #92400e; }
+.notif-icon--bell            { background: #f3f4f6; color: #6b7280; }
+
+/* Specific status icons */
+.notif-item:has(.bi-check-circle-fill) .notif-item__icon { background: #dcfce7; color: #16a34a; }
+.notif-item:has(.bi-x-circle-fill)     .notif-item__icon { background: #fee2e2; color: #dc2626; }
+.notif-item:has(.bi-eye-fill)          .notif-item__icon { background: #f3e8ff; color: #7e22ce; }
+
+.notif-item__body  { flex: 1; min-width: 0; }
+.notif-item__title { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.notif-item__msg   { font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 4px; }
+.notif-item__time  { font-size: 0.7rem; color: var(--text-faint); }
+
+@media(max-width:400px) { .notif-panel { width: calc(100vw - 32px); right: -60px; } }

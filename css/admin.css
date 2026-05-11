@@ -1,0 +1,130 @@
+/* ============================================================
+   JobMatch — Admin Panel
+   ============================================================ */
+
+.admin-header { background: linear-gradient(135deg, #1e1b4b, #312e81); }
+.admin-header__top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.admin-header__badge {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 999px; padding: 8px 18px;
+  font-size: 0.875rem; font-weight: 600; color: #fff;
+}
+
+/* ── Stats ── */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+@media(max-width:900px){ .admin-stats{ grid-template-columns: repeat(3,1fr); } }
+@media(max-width:600px){ .admin-stats{ grid-template-columns: repeat(2,1fr); } }
+
+.admin-stat {
+  border-radius: 14px; padding: 18px 20px;
+  display: flex; align-items: center; gap: 14px;
+  color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.admin-stat i { font-size: 1.6rem; opacity: 0.85; }
+.admin-stat--blue   { background: linear-gradient(135deg,#2557a7,#1e6fc8); }
+.admin-stat--indigo { background: linear-gradient(135deg,#4338ca,#6d28d9); }
+.admin-stat--orange { background: linear-gradient(135deg,#ea580c,#f97316); }
+.admin-stat--green  { background: linear-gradient(135deg,#15803d,#16a34a); }
+.admin-stat--purple { background: linear-gradient(135deg,#7e22ce,#a21caf); }
+.admin-stat__num { display: block; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
+.admin-stat__lbl { display: block; font-size: 0.72rem; opacity: 0.8; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── Search ── */
+.admin-search {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 10px; padding: 10px 16px;
+  margin-bottom: 16px; max-width: 400px;
+  box-shadow: 0 1px 4px rgba(11,18,32,0.06);
+}
+.admin-search i { color: #9ca3af; }
+.admin-search input {
+  border: none; outline: none; font-size: 0.875rem;
+  font-family: var(--font); color: var(--text); flex: 1; background: transparent;
+}
+.admin-search input::placeholder { color: #9ca3af; }
+
+/* ── Table ── */
+.admin-table-wrap {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 14px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(11,18,32,0.05);
+}
+.admin-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.admin-table thead { background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+.admin-table th {
+  padding: 13px 16px; text-align: left;
+  font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-faint); white-space: nowrap;
+}
+.admin-table td {
+  padding: 13px 16px; border-bottom: 1px solid #f3f4f6;
+  color: var(--text); vertical-align: middle;
+}
+.admin-table tbody tr:last-child td { border-bottom: none; }
+.admin-table tbody tr:hover { background: #f9fafb; }
+
+.admin-loading { text-align: center; padding: 40px; }
+
+/* ── Role badge ── */
+.role-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.role-badge--seeker   { background: #dbeafe; color: #1e40af; }
+.role-badge--employer { background: #fef3c7; color: #92400e; }
+.role-badge--admin    { background: #fce7f3; color: #9d174d; }
+
+/* ── Action buttons ── */
+.admin-actions { display: flex; gap: 6px; }
+.btn--danger {
+  background: #ef4444; color: #fff; border: none;
+  border-radius: 8px; padding: 7px 14px;
+  font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+  transition: all 0.15s;
+}
+.btn--danger:hover { background: #dc2626; transform: translateY(-1px); }
+
+.admin-role-select {
+  padding: 5px 10px; border: 1px solid #e5e7eb;
+  border-radius: 8px; font-size: 0.78rem;
+  font-family: var(--font); color: var(--text);
+  background: #f9fafb; cursor: pointer; outline: none;
+  transition: border-color 0.15s;
+}
+.admin-role-select:focus { border-color: var(--blue-mid); }
+
+/* ── Job status select ── */
+.admin-status-select {
+  padding: 5px 10px; border: 1px solid #e5e7eb;
+  border-radius: 8px; font-size: 0.78rem;
+  font-family: var(--font); color: var(--text);
+  background: #f9fafb; cursor: pointer; outline: none;
+}
+
+/* ── Confirm modal ── */
+.confirm-icon { font-size: 2.5rem; color: #ef4444; margin-bottom: 12px; }
+.confirm-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+.confirm-msg   { font-size: 0.875rem; color: var(--text-muted); }
+
+/* ── Score color ── */
+.score-high { color: #16a34a; font-weight: 700; }
+.score-mid  { color: #ca8a04; font-weight: 700; }
+.score-low  { color: #dc2626; font-weight: 700; }
+.score-none { color: var(--text-faint); }
+
+/* ── Empty state ── */
+.admin-empty { text-align: center; padding: 48px; color: var(--text-muted); }
+.admin-empty i { font-size: 2.5rem; color: #d1d5db; display: block; margin-bottom: 12px; }

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employer Dashboard — JobMatch</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/jobs.css" />
+  <link rel="stylesheet" href="../css/notifications.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/employer.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="jobs-page">
+
+  <nav class="navbar">
+    <div class="container navbar__inner">
+      <a href="../index.html" class="navbar__logo">
+        <div class="logo-icon"><i class="bi bi-briefcase-fill"></i></div>
+        Job<span>Match</span>
+      </a>
+      <ul class="navbar__links">
+        <li><a href="employer-dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="#" onclick="switchTab('company', document.querySelectorAll('.dash-tab')[3])">Company Profile</a></li>
+      </ul>
+      <div class="navbar__auth" style="display:flex;align-items:center;gap:10px">
+      <div class="notif-wrapper">
+        <button class="notif-bell" id="notifBell" onclick="toggleNotifications()" title="Notifications"><i class="bi bi-bell"></i><span class="notif-badge" id="notifBadge" style="display:none">0</span></button>
+        <div class="notif-panel" id="notifPanel"><div class="notif-panel__header"><span class="notif-panel__title"><i class="bi bi-bell-fill"></i>Notifications</span><button class="notif-panel__mark-read" onclick="markAllRead()">Mark all read</button></div><div id="notifList"></div></div>
+      </div>
+        <span class="navbar__user" id="navUser"></span>
+        <button class="btn btn--ghost btn--sm" onclick="handleSignOut()">
+          <i class="bi bi-box-arrow-right"></i> Sign out
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="dash-header emp-header">
+    <div class="container emp-header__inner">
+      <div>
+        <p class="emp-header__greeting">Welcome back,</p>
+        <h1 class="dash-header__title" id="empName">Employer</h1>
+        <p class="dash-header__sub">Manage your listings and find the best candidates</p>
+      </div>
+      <button class="btn btn--primary emp-post-btn" onclick="openPostJob()">
+        <i class="bi bi-plus-lg"></i> Post a Job
+      </button>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:28px;padding-bottom:60px">
+
+    <!-- Stats -->
+    <div class="dash-stats" style="grid-template-columns:repeat(4,1fr)">
+      <div class="dash-stat">
+        <i class="bi bi-briefcase"></i>
+        <span class="dash-stat__num" id="dsJobs">—</span>
+        <span class="dash-stat__lbl">Active Jobs</span>
+      </div>
+      <div class="dash-stat">
+        <i class="bi bi-people"></i>
+        <span class="dash-stat__num" id="dsApplicants">—</span>
+        <span class="dash-stat__lbl">Total Applicants</span>
+      </div>
+      <div class="dash-stat dash-stat--green">
+        <i class="bi bi-check-circle"></i>
+        <span class="dash-stat__num" id="dsAccepted">—</span>
+        <span class="dash-stat__lbl">Accepted</span>
+      </div>
+      <div class="dash-stat dash-stat--orange">
+        <i class="bi bi-graph-up-arrow"></i>
+        <span class="dash-stat__num" id="dsAvgScore">—</span>
+        <span class="dash-stat__lbl">Avg Match Score</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="dash-tabs">
+      <button class="dash-tab dash-tab--active" onclick="switchTab('jobs', this)">
+        <i class="bi bi-briefcase"></i> My Listings
+      </button>
+      <button class="dash-tab" onclick="switchTab('applicants', this)">
+        <i class="bi bi-people"></i> Applicants
+      </button>
+      <button class="dash-tab" onclick="switchTab('company', this)">
+        <i class="bi bi-building"></i> Company Profile
+      </button>
+    </div>
+
+    <!-- MY LISTINGS TAB -->
+    <div id="tab-jobs">
+      <div id="empJobsList">
+        <div class="jobs-loading"><div class="spinner-lg"></div><p>Loading your jobs…</p></div>
+      </div>
+    </div>
+
+    <!-- APPLICANTS TAB -->
+    <div id="tab-applicants" class="hidden">
+      <div class="emp-job-selector" id="jobSelector">
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:12px">Select a job to view applicants:</p>
+        <div id="jobSelectorList"></div>
+      </div>
+      <div id="applicantsList" class="hidden">
+        <button class="btn btn--ghost btn--sm" onclick="showJobSelector()" style="margin-bottom:16px">
+          <i class="bi bi-arrow-left"></i> Back to jobs
+        </button>
+        <div id="applicantsContent"></div>
+      </div>
+    </div>
+
+    <!-- COMPANY PROFILE TAB -->
+    <div id="tab-company" class="hidden">
+      <div class="emp-company-card">
+        <div class="emp-company-card__header">
+          <div class="emp-company-logo" id="companyLogoPreview">
+            <i class="bi bi-building"></i>
+          </div>
+          <div>
+            <h2 class="emp-company-card__name" id="companyNameDisplay">Your Company</h2>
+            <p class="emp-company-card__meta" id="companyMetaDisplay">Set up your company profile</p>
+          </div>
+        </div>
+        <form id="companyForm">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="profile-field">
+              <label>Company name</label>
+              <input type="text" id="cf-name" placeholder="e.g. TechCore Ltd" />
+            </div>
+            <div class="profile-field">
+              <label>Industry</label>
+              <select id="cf-industry">
+                <option value="">Select industry</option>
+                <option>Technology</option>
+                <option>Finance</option>
+                <option>Healthcare</option>
+                <option>Education</option>
+                <option>Marketing</option>
+                <option>Engineering</option>
+                <option>Legal</option>
+                <option>Hospitality</option>
+                <option>Logistics</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="profile-field">
+              <label>Location</label>
+              <input type="text" id="cf-location" placeholder="e.g. Nicosia, Cyprus" />
+            </div>
+            <div class="profile-field">
+              <label>Company size</label>
+              <select id="cf-size">
+                <option value="">Select size</option>
+                <option>1–10 employees</option>
+                <option>11–50 employees</option>
+                <option>51–200 employees</option>
+                <option>201–500 employees</option>
+                <option>500+ employees</option>
+              </select>
+            </div>
+          </div>
+          <div class="profile-field">
+            <label>Website</label>
+            <input type="url" id="cf-website" placeholder="https://yourcompany.com" />
+          </div>
+          <div class="profile-field">
+            <label>Company description</label>
+            <textarea id="cf-desc" rows="4" placeholder="Tell job seekers about your company, culture and what makes you a great place to work…"></textarea>
+          </div>
+          <button type="submit" class="btn--submit" id="companySaveBtn">
+            <span id="companySaveText"><i class="bi bi-check-lg"></i> Save Company Profile</span>
+            <span id="companySaveSpinner" class="spinner hidden"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- POST / EDIT JOB MODAL -->
+  <div class="modal-overlay" id="postJobOverlay" onclick="closePostJobModal(event)">
+    <div class="modal" style="max-width:640px">
+      <button class="modal__close" onclick="closePostJob()"><i class="bi bi-x-lg"></i></button>
+      <div class="modal__body">
+        <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:4px" id="jobModalTitle">Post a New Job</h2>
+        <p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:24px">Fill in the details below</p>
+        <form id="postJobForm">
+          <input type="hidden" id="editJobId" value="" />
+          <div class="profile-field">
+            <label>Job title *</label>
+            <input type="text" id="pj-title" placeholder="e.g. Frontend Developer" required />
+          </div>
+          <div class="profile-field">
+            <label>Description *</label>
+            <textarea id="pj-desc" rows="4" placeholder="Describe the role and responsibilities…" required></textarea>
+          </div>
+          <div class="profile-field">
+            <label>Requirements <span style="font-weight:400;color:var(--text-faint)">· used for CV match scoring</span></label>
+            <textarea id="pj-req" rows="3" placeholder="List skills e.g. React JavaScript Node.js PostgreSQL Docker"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="profile-field">
+              <label>Location</label>
+              <input type="text" id="pj-loc" placeholder="e.g. Nicosia, Cyprus" />
+            </div>
+            <div class="profile-field">
+              <label>Salary</label>
+              <input type="text" id="pj-salary" placeholder="e.g. $2,000 – $3,500/mo" />
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="profile-field">
+              <label>Job type</label>
+              <select id="pj-type">
+                <option value="full-time">Full-time</option>
+                <option value="part-time">Part-time</option>
+                <option value="contract">Contract</option>
+                <option value="remote">Remote</option>
+              </select>
+            </div>
+            <div class="profile-field">
+              <label>Status</label>
+              <select id="pj-status">
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn--submit" id="postJobBtn">
+            <span id="postJobText"><i class="bi bi-plus-lg"></i> Post Job</span>
+            <span id="postJobSpinner" class="spinner hidden"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast toast--hidden">
+    <span id="toastIcon"></span><span id="toastMsg"></span>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/employer.js"></script>
+</body>
+</html>
