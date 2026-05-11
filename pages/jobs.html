@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Jobs — JobMatch</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/jobs.css" />
+  <link rel="stylesheet" href="../css/notifications.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="jobs-page">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container navbar__inner">
+      <a href="../index.html" class="navbar__logo">
+        <div class="logo-icon"><i class="bi bi-briefcase-fill"></i></div>
+        Job<span>Match</span>
+      </a>
+      <ul class="navbar__links">
+        <li><a href="jobs.html" class="active">Browse Jobs</a></li>
+        <li><a href="seeker-dashboard.html">My Applications</a></li>
+        <li><a href="#" onclick="showSavedJobs()">Saved Jobs <span class="saved-count hidden" id="savedCount">0</span></a></li>
+      </ul>
+      <div class="navbar__auth" style="display:flex;align-items:center;gap:10px">
+      <div class="notif-wrapper">
+        <button class="notif-bell" id="notifBell" onclick="toggleNotifications()" title="Notifications"><i class="bi bi-bell"></i><span class="notif-badge" id="notifBadge" style="display:none">0</span></button>
+        <div class="notif-panel" id="notifPanel"><div class="notif-panel__header"><span class="notif-panel__title"><i class="bi bi-bell-fill"></i>Notifications</span><button class="notif-panel__mark-read" onclick="markAllRead()">Mark all read</button></div><div id="notifList"></div></div>
+      </div>
+        <span class="navbar__user navbar__user--desktop" id="navUser"></span>
+        <button class="btn btn--ghost btn--sm" onclick="handleSignOut()" title="Sign out">
+          <i class="bi bi-box-arrow-right"></i>
+          <span class="btn-text--desktop">Sign out</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="jobs-header">
+    <div class="container">
+      <h1 class="jobs-header__title">Find your next role</h1>
+      <p class="jobs-header__sub">Browse open positions across Cyprus and beyond</p>
+      <div class="search-bar">
+        <div class="search-bar__field">
+          <i class="bi bi-search"></i>
+          <input type="text" id="searchInput" placeholder="Job title or keyword…" />
+        </div>
+        <div class="search-bar__field">
+          <i class="bi bi-geo-alt"></i>
+          <input type="text" id="locationInput" placeholder="Location…" />
+        </div>
+        <button class="btn btn--primary" onclick="loadJobs()">
+          <i class="bi bi-search"></i> Search
+        </button>
+      </div>
+      <div class="filters">
+        <button class="filter-btn filter-btn--active" onclick="setFilter('all', this)">All Jobs</button>
+        <button class="filter-btn" onclick="setFilter('remote', this)">Remote</button>
+        <button class="filter-btn" onclick="setFilter('full-time', this)">Full-time</button>
+        <button class="filter-btn" onclick="setFilter('part-time', this)">Part-time</button>
+        <button class="filter-btn" onclick="setFilter('contract', this)">Contract</button>
+      </div>
+
+      <!-- Mobile CV + Profile quick bar (hidden on desktop) -->
+      <div class="mobile-quick-bar">
+        <label class="mobile-quick-btn" id="mobileCV">
+          <i class="bi bi-file-earmark-arrow-up"></i>
+          <span id="mobileCVText">Upload CV</span>
+          <input type="file" id="cvInputMobile" accept=".pdf" hidden onchange="uploadCV(this)" />
+        </label>
+        <button class="mobile-quick-btn" onclick="openProfileModal()">
+          <i class="bi bi-person-badge"></i>
+          <span>Career Profile</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container jobs-layout">
+    <main>
+      <!-- Suggested for you -->
+      <div id="suggestedSection" class="suggested-section hidden">
+        <div class="section-label">
+          <i class="bi bi-stars"></i> Suggested for you
+          <span class="section-label__sub">Based on your profile &amp; CV</span>
+        </div>
+        <div class="suggested-list" id="suggestedList"></div>
+      </div>
+
+      <!-- All jobs -->
+      <div class="section-label" id="allJobsLabel">
+        <i class="bi bi-briefcase"></i> All Jobs
+        <span class="section-label__sub" id="jobsCountLabel"></span>
+      </div>
+      <div class="jobs-list" id="jobsList">
+        <div class="jobs-loading"><div class="spinner-lg"></div><p>Loading jobs…</p></div>
+      </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="jobs-sidebar">
+
+      <!-- CV upload card -->
+      <div class="sidebar-card" id="cvCard">
+        <div class="sidebar-card__icon"><i class="bi bi-file-earmark-person"></i></div>
+        <h3 class="sidebar-card__title">Your CV</h3>
+        <p class="sidebar-card__text" id="cvCardText">Upload your PDF CV to see match scores and get personalised job suggestions.</p>
+        <label class="btn btn--primary btn--full cv-upload-label">
+          <i class="bi bi-upload"></i>
+          <span id="cvBtnText">Upload CV</span>
+          <input type="file" id="cvInput" accept=".pdf" hidden onchange="uploadCV(this)" />
+        </label>
+        <p class="cv-status" id="cvStatus"></p>
+      </div>
+
+      <!-- Career profile card -->
+      <div class="sidebar-card">
+        <div class="sidebar-card__icon" style="background:#eff6ff"><i class="bi bi-person-badge" style="color:var(--blue-mid)"></i></div>
+        <h3 class="sidebar-card__title">Career Profile</h3>
+        <p class="sidebar-card__text">Tell us about your goals to get better job suggestions.</p>
+        <button class="btn btn--primary btn--full" onclick="openProfileModal()">
+          <i class="bi bi-pencil"></i> <span id="profileBtnText">Set up profile</span>
+        </button>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-card__title">Quick stats</h3>
+        <div class="quick-stats">
+          <div class="quick-stat">
+            <span class="quick-stat__num" id="statTotal">—</span>
+            <span class="quick-stat__lbl">Open jobs</span>
+          </div>
+          <div class="quick-stat">
+            <span class="quick-stat__num" id="statApplied">—</span>
+            <span class="quick-stat__lbl">Applied</span>
+          </div>
+          <div class="quick-stat">
+            <span class="quick-stat__num" id="statSaved">—</span>
+            <span class="quick-stat__lbl">Saved</span>
+          </div>
+          <div class="quick-stat">
+            <span class="quick-stat__num" id="statMatch">—</span>
+            <span class="quick-stat__lbl">Best match</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- ── JOB DETAIL MODAL ── -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="jobModal">
+      <button class="modal__close" onclick="closeJobModal()"><i class="bi bi-x-lg"></i></button>
+      <div class="modal__body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ── CAREER PROFILE MODAL ── -->
+  <div class="modal-overlay" id="profileOverlay" onclick="closeProfileModal(event)">
+    <div class="modal" id="profileModal">
+      <button class="modal__close" onclick="closeProfileModal()"><i class="bi bi-x-lg"></i></button>
+      <div class="modal__body">
+        <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:4px">Your Career Profile</h2>
+        <p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:24px">Help us suggest the right jobs for you</p>
+        <form id="profileForm">
+
+          <div class="profile-field">
+            <label>Target job title</label>
+            <input type="text" id="pf-title" placeholder="e.g. Frontend Developer" />
+          </div>
+
+          <div class="profile-field">
+            <label>Years of experience</label>
+            <select id="pf-exp">
+              <option value="0">Less than 1 year</option>
+              <option value="1">1–2 years</option>
+              <option value="3">3–5 years</option>
+              <option value="6">6–10 years</option>
+              <option value="11">10+ years</option>
+            </select>
+          </div>
+
+          <div class="profile-field">
+            <label>Preferred work type</label>
+            <div class="pf-options">
+              <label class="pf-option"><input type="radio" name="pf-work" value="any" checked /><span>Any</span></label>
+              <label class="pf-option"><input type="radio" name="pf-work" value="remote" /><span>Remote</span></label>
+              <label class="pf-option"><input type="radio" name="pf-work" value="full-time" /><span>Full-time</span></label>
+              <label class="pf-option"><input type="radio" name="pf-work" value="part-time" /><span>Part-time</span></label>
+              <label class="pf-option"><input type="radio" name="pf-work" value="contract" /><span>Contract</span></label>
+            </div>
+          </div>
+
+          <div class="profile-field">
+            <label>Top skills <span style="color:var(--text-faint);font-weight:400">(comma separated)</span></label>
+            <input type="text" id="pf-skills" placeholder="e.g. JavaScript, React, Node.js" />
+          </div>
+
+          <div class="profile-field">
+            <label>Industry preference</label>
+            <select id="pf-industry">
+              <option value="">Any industry</option>
+              <option>Technology</option>
+              <option>Finance</option>
+              <option>Healthcare</option>
+              <option>Education</option>
+              <option>Marketing</option>
+              <option>Engineering</option>
+              <option>Legal</option>
+              <option>Hospitality</option>
+              <option>Logistics</option>
+              <option>Agriculture</option>
+            </select>
+          </div>
+
+          <div class="profile-field">
+            <label>Expected salary</label>
+            <input type="text" id="pf-salary" placeholder="e.g. $2,000 – $3,500/mo" />
+          </div>
+
+          <div class="profile-field">
+            <label>Short bio <span style="color:var(--text-faint);font-weight:400">(optional)</span></label>
+            <textarea id="pf-bio" rows="3" placeholder="Tell employers a bit about yourself…"></textarea>
+          </div>
+
+          <button type="submit" class="btn--submit" id="profileSaveBtn">
+            <span id="profileSaveText"><i class="bi bi-check-lg"></i> Save Profile</span>
+            <span id="profileSaveSpinner" class="spinner hidden"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CV QUESTIONNAIRE MODAL (shown after CV upload) ── -->
+  <div class="modal-overlay" id="cvQuizOverlay">
+    <div class="modal" id="cvQuizModal">
+      <div class="modal__body">
+        <div class="quiz-header">
+          <div class="quiz-icon"><i class="bi bi-stars"></i></div>
+          <h2>Great! CV uploaded ✓</h2>
+          <p>Answer a few quick questions to get personalised job suggestions</p>
+        </div>
+        <div class="quiz-steps" id="quizSteps">
+
+          <div class="quiz-step active" data-step="1">
+            <p class="quiz-q">What kind of role are you looking for?</p>
+            <input type="text" class="quiz-input" id="quiz-title" placeholder="e.g. Software Engineer, Designer…" />
+            <button class="quiz-next btn--submit" onclick="quizNext(2)">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+
+          <div class="quiz-step" data-step="2">
+            <p class="quiz-q">How many years of experience do you have?</p>
+            <div class="quiz-options">
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'exp','0')">Under 1 year</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'exp','1')">1–2 years</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'exp','3')">3–5 years</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'exp','6')">6–10 years</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'exp','11')">10+ years</button>
+            </div>
+            <button class="quiz-next btn--submit" onclick="quizNext(3)">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+
+          <div class="quiz-step" data-step="3">
+            <p class="quiz-q">Where do you prefer to work?</p>
+            <div class="quiz-options">
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'work','any')">Anywhere</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'work','remote')">Remote only</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'work','full-time')">On-site full-time</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'work','part-time')">Part-time</button>
+              <button class="quiz-opt" onclick="selectQuizOpt(this,'work','contract')">Contract</button>
+            </div>
+            <button class="quiz-next btn--submit" onclick="quizNext(4)">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+
+          <div class="quiz-step" data-step="4">
+            <p class="quiz-q">What are your top 3 skills?</p>
+            <input type="text" class="quiz-input" id="quiz-skills" placeholder="e.g. Python, SQL, Machine Learning" />
+            <button class="quiz-next btn--submit" onclick="submitQuiz()">
+              <i class="bi bi-stars"></i> Show my matches
+            </button>
+          </div>
+
+        </div>
+        <div class="quiz-progress">
+          <div class="quiz-progress__bar" id="quizProgressBar" style="width:25%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COMMUNITY CHAT ── -->
+  <button class="chat-fab" id="chatFab" onclick="toggleChat()">
+    <i class="bi bi-chat-dots-fill"></i>
+    <span class="chat-fab__badge hidden" id="chatBadge">0</span>
+  </button>
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-panel__header">
+      <div class="chat-panel__title"><i class="bi bi-people-fill"></i> Community Chat</div>
+      <button class="chat-panel__close" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-loading"><div class="spinner" style="border-top-color:var(--blue-mid)"></div></div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" class="chat-input" placeholder="Message the community…" maxlength="300" />
+      <button class="chat-send" onclick="sendMessage()"><i class="bi bi-send-fill"></i></button>
+    </div>
+  </div>
+  <div class="chat-backdrop hidden" id="chatBackdrop" onclick="toggleChat()"></div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast toast--hidden">
+    <span id="toastIcon"></span><span id="toastMsg"></span>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/jobs.js"></script>
+  <script src="../js/chat.js"></script>
+</body>
+</html>

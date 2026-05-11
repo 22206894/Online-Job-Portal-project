@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — JobMatch</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/jobs.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="jobs-page">
+
+  <nav class="navbar">
+    <div class="container navbar__inner">
+      <a href="../index.html" class="navbar__logo">
+        <div class="logo-icon"><i class="bi bi-briefcase-fill"></i></div>
+        Job<span>Match</span>
+      </a>
+      <ul class="navbar__links">
+        <li><a href="admin.html" class="active"><i class="bi bi-shield-lock"></i> Admin Panel</a></li>
+      </ul>
+      <div class="navbar__auth">
+        <span class="navbar__user" id="navUser"></span>
+        <button class="btn btn--ghost btn--sm" onclick="handleSignOut()">
+          <i class="bi bi-box-arrow-right"></i> Sign out
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="dash-header admin-header">
+    <div class="container">
+      <div class="admin-header__top">
+        <div>
+          <h1 class="dash-header__title"><i class="bi bi-shield-lock"></i> Admin Panel</h1>
+          <p class="dash-header__sub">Full platform control — manage users, jobs and applications</p>
+        </div>
+        <div class="admin-header__badge">
+          <i class="bi bi-person-fill"></i> <span id="adminName">Admin</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:28px;padding-bottom:60px">
+
+    <!-- Stats -->
+    <div class="admin-stats">
+      <div class="admin-stat admin-stat--blue">
+        <i class="bi bi-people-fill"></i>
+        <div>
+          <span class="admin-stat__num" id="statUsers">—</span>
+          <span class="admin-stat__lbl">Total Users</span>
+        </div>
+      </div>
+      <div class="admin-stat admin-stat--indigo">
+        <i class="bi bi-person-badge-fill"></i>
+        <div>
+          <span class="admin-stat__num" id="statSeekers">—</span>
+          <span class="admin-stat__lbl">Job Seekers</span>
+        </div>
+      </div>
+      <div class="admin-stat admin-stat--orange">
+        <i class="bi bi-building-fill"></i>
+        <div>
+          <span class="admin-stat__num" id="statEmployers">—</span>
+          <span class="admin-stat__lbl">Employers</span>
+        </div>
+      </div>
+      <div class="admin-stat admin-stat--green">
+        <i class="bi bi-briefcase-fill"></i>
+        <div>
+          <span class="admin-stat__num" id="statJobs">—</span>
+          <span class="admin-stat__lbl">Job Listings</span>
+        </div>
+      </div>
+      <div class="admin-stat admin-stat--purple">
+        <i class="bi bi-send-fill"></i>
+        <div>
+          <span class="admin-stat__num" id="statApps">—</span>
+          <span class="admin-stat__lbl">Applications</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="dash-tabs" style="margin-bottom:24px">
+      <button class="dash-tab dash-tab--active" onclick="switchTab('users', this)">
+        <i class="bi bi-people"></i> Users
+      </button>
+      <button class="dash-tab" onclick="switchTab('jobs', this)">
+        <i class="bi bi-briefcase"></i> Jobs
+      </button>
+      <button class="dash-tab" onclick="switchTab('applications', this)">
+        <i class="bi bi-send"></i> Applications
+      </button>
+    </div>
+
+    <!-- Search bar -->
+    <div class="admin-search">
+      <i class="bi bi-search"></i>
+      <input type="text" id="adminSearch" placeholder="Search…" oninput="filterTable()" />
+    </div>
+
+    <!-- Users tab -->
+    <div id="tab-users">
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="usersTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody">
+            <tr><td colspan="6" class="admin-loading"><div class="spinner-lg"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Jobs tab -->
+    <div id="tab-jobs" class="hidden">
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="jobsTable">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Employer</th>
+              <th>Location</th>
+              <th>Type</th>
+              <th>Applicants</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="jobsBody">
+            <tr><td colspan="7" class="admin-loading"><div class="spinner-lg"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Applications tab -->
+    <div id="tab-applications" class="hidden">
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="appsTable">
+          <thead>
+            <tr>
+              <th>Applicant</th>
+              <th>Email</th>
+              <th>Job</th>
+              <th>Match Score</th>
+              <th>Status</th>
+              <th>Applied</th>
+            </tr>
+          </thead>
+          <tbody id="appsBody">
+            <tr><td colspan="6" class="admin-loading"><div class="spinner-lg"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Confirm modal -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal" style="max-width:400px">
+      <div class="modal__body" style="text-align:center">
+        <div class="confirm-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <h3 class="confirm-title" id="confirmTitle">Are you sure?</h3>
+        <p class="confirm-msg" id="confirmMsg"></p>
+        <div style="display:flex;gap:12px;margin-top:24px">
+          <button class="btn btn--ghost btn--full" onclick="closeConfirm()">Cancel</button>
+          <button class="btn btn--danger btn--full" id="confirmBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast toast--hidden">
+    <span id="toastIcon"></span><span id="toastMsg"></span>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
